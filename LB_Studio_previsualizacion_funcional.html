@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth overflow-x-hidden">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>LB Studio — Desarrollo Web Profesional en Colombia</title>
+    <meta name="description" content="Desarrollo web profesional en Colombia. Páginas web rápidas, modernas, tiendas online y cotizador instantáneo en COP.">
+    
+    <!-- Tailwind CSS (Configuración optimizada) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.tailwind = window.tailwind || {};
+        window.tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81'
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        html, body {
+            font-family: 'Inter', sans-serif;
+            max-width: 100%;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* Prevenir zoom automático en inputs en iOS Safari */
+        @media screen and (max-width: 768px) {
+            input, select, textarea {
+                font-size: 16px !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-zinc-950 dark:text-slate-100 transition-colors duration-300 min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white overflow-x-hidden">
+
+    <!-- Header & Navegación Principal -->
+    <header class="sticky top-0 z-40 w-full border-b border-slate-200 dark:border-zinc-800/80 bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-1.5 sm:gap-2">
+            
+            <!-- Logotipo -->
+            <a href="#inicio" class="flex items-center gap-2 sm:gap-3 group min-w-0 shrink">
+                <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-400 text-white flex items-center justify-center font-extrabold text-base sm:text-xl shadow-lg shadow-brand-500/25 group-hover:scale-105 transition-transform shrink-0">
+                    LB
+                </div>
+                <div class="min-w-0">
+                    <span class="text-sm sm:text-lg font-bold tracking-tight block truncate">LB Studio</span>
+                    <span class="hidden sm:block text-[11px] font-medium text-slate-500 dark:text-slate-400 -mt-1 truncate">Desarrollo Web en Colombia</span>
+                </div>
+            </a>
+
+            <!-- Enlaces Desktop -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600 dark:text-slate-300">
+                <a href="#inicio" class="hover:text-slate-950 dark:hover:text-white transition-colors">Inicio</a>
+                <a href="#servicios" class="hover:text-slate-950 dark:hover:text-white transition-colors">Servicios</a>
+                <a href="#proyectos" class="hover:text-slate-950 dark:hover:text-white transition-colors">Portafolio</a>
+                <a href="#contacto" class="hover:text-slate-950 dark:hover:text-white transition-colors">Contacto</a>
+            </nav>
+
+            <!-- Acciones Derecha -->
+            <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
+                <!-- Botón de Cotizar en la barra superior -->
+                <button type="button" id="open-calculator-nav-btn" class="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-2 sm:py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold shadow-md shadow-brand-500/20 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 shrink-0" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><path d="M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14v4M8 18h4"/></svg>
+                    <span>Cotizar</span>
+                </button>
+
+                <!-- Botón de Mensajes Recibidos (Solo Admin autenticado en Firebase) -->
+                <button type="button" id="header-messages-btn" title="Ver mensajes recibidos" class="hidden sm:hidden items-center gap-1.5 px-3 py-2.5 rounded-xl bg-brand-600 text-white text-xs font-semibold shadow-md hover:bg-brand-700 transition-all">
+                    <i data-lucide="inbox" class="w-4 h-4"></i>
+                    <span class="hidden lg:inline">Mensajes</span>
+                    <span id="unread-messages-badge-header" class="px-1.5 py-0.5 text-[10px] rounded-full bg-white text-brand-700 font-bold">0</span>
+                </button>
+
+                <!-- Botón Acceso Admin en la barra superior -->
+                <button type="button" id="open-admin-login-btn" title="Panel de Administrador" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:border-brand-500 hover:text-slate-950 dark:hover:text-white transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+                    <span id="admin-header-status" class="hidden lg:inline">Admin</span>
+                </button>
+
+                <!-- Botón Modo Oscuro / Claro -->
+                <button type="button" id="theme-toggle-btn" class="p-2 sm:p-2.5 rounded-xl bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-zinc-800 transition-all" aria-label="Cambiar modo de color">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 sm:w-5 sm:h-5 hidden dark:block" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 sm:w-5 sm:h-5 block dark:hidden" aria-hidden="true"><path d="M20.985 12.486A9 9 0 0 1 11.514 3.015 9 9 0 1 0 20.985 12.486Z"/></svg>
+                </button>
+
+                <!-- Botón Menú Móvil -->
+                <button type="button" id="mobile-menu-btn" aria-label="Abrir menú" class="md:hidden p-2 rounded-xl bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 text-slate-700 dark:text-slate-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Menú Móvil Desplegable -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-5 py-4 space-y-1.5 shadow-xl">
+            <a href="#inicio" class="mobile-nav-link block text-base font-medium py-2.5 text-slate-700 dark:text-slate-200 active:text-brand-600">Inicio</a>
+            <a href="#servicios" class="mobile-nav-link block text-base font-medium py-2.5 text-slate-700 dark:text-slate-200 active:text-brand-600">Servicios</a>
+            <a href="#proyectos" class="mobile-nav-link block text-base font-medium py-2.5 text-slate-700 dark:text-slate-200 active:text-brand-600">Portafolio</a>
+            <a href="#contacto" class="mobile-nav-link block text-base font-medium py-2.5 text-slate-700 dark:text-slate-200 active:text-brand-600">Contacto</a>
+            <div class="pt-2.5 mt-1 border-t border-slate-200 dark:border-zinc-800 flex flex-col gap-1.5">
+                <button type="button" id="open-calculator-mobile-btn" class="w-full text-left flex items-center gap-2 text-base font-semibold py-2.5 text-brand-600 dark:text-brand-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><path d="M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14v4M8 18h4"/></svg>
+                    <span>Cotizador Instantáneo</span>
+                </button>
+                <button type="button" id="mobile-messages-btn" class="hidden w-full text-left items-center justify-between text-base font-semibold py-2.5 text-brand-600 dark:text-brand-400">
+                    <span class="flex items-center gap-2"><i data-lucide="inbox" class="w-4 h-4"></i> Bandeja de Mensajes</span>
+                    <span id="unread-messages-badge-mobile" class="px-2 py-0.5 text-xs rounded-full bg-brand-600 text-white font-bold">0</span>
+                </button>
+                <button type="button" id="mobile-admin-btn" class="w-full text-left flex items-center gap-2 text-sm font-medium py-2.5 text-slate-500 dark:text-slate-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+                    <span id="admin-mobile-status">Acceso Admin</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="flex-1 w-full overflow-x-hidden">
+
+        <!-- Sección Hero -->
+        <section id="inicio" class="relative overflow-hidden pt-12 pb-16 sm:pt-20 sm:pb-24 lg:pt-28 lg:pb-32">
+            <div class="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+            <div class="hidden sm:block absolute left-1/2 top-1/4 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-brand-500/10 dark:bg-brand-500/20 blur-[120px] rounded-full -z-10"></div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-600 dark:text-brand-400 text-[11px] sm:text-xs font-semibold mb-5 sm:mb-6 max-w-full">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5 shrink-0"></i>
+                    <span class="truncate">Desarrollo Web Profesional en Colombia</span>
+                </div>
+
+                <h1 class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight max-w-4xl mx-auto leading-[1.15] mb-6 sm:mb-8 break-words">
+                    Elevamos tu negocio al siguiente nivel digital
+                </h1>
+
+                <p class="text-base sm:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed">
+                    Creamos páginas web ultrarrápidas, modernas y optimizadas para celulares en Colombia. Diseño impecable, pasarelas de pago y cotizador instantáneo en pesos colombianos (COP).
+                </p>
+
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 max-w-md sm:max-w-none mx-auto">
+                    <a href="#contacto" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm sm:text-base shadow-xl shadow-brand-500/25 transition-all sm:hover:scale-105">
+                        <span>Cotiza tu proyecto</span>
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </a>
+                    <button type="button" id="open-calculator-hero-btn" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 font-semibold text-sm sm:text-base hover:border-brand-500 transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-brand-500 shrink-0" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><path d="M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14v4M8 18h4"/></svg>
+                        <span>Cotizador Instantáneo (COP)</span>
+                    </button>
+                </div>
+
+                <!-- Tarjetas informativas -->
+                <div class="mt-12 sm:mt-16 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-4xl mx-auto text-left">
+                    <div class="p-4 rounded-2xl bg-white/80 dark:bg-zinc-900/80 border border-slate-200/80 dark:border-zinc-800/80 backdrop-blur-sm">
+                        <div class="text-brand-600 dark:text-brand-400 font-bold text-lg sm:text-xl mb-1">+100%</div>
+                        <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">Adaptado a celulares y tablets</div>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-white/80 dark:bg-zinc-900/80 border border-slate-200/80 dark:border-zinc-800/80 backdrop-blur-sm">
+                        <div class="text-brand-600 dark:text-brand-400 font-bold text-lg sm:text-xl mb-1">$500k COP</div>
+                        <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">Precios accesibles y transparentes</div>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-white/80 dark:bg-zinc-900/80 border border-slate-200/80 dark:border-zinc-800/80 backdrop-blur-sm">
+                        <div class="text-brand-600 dark:text-brand-400 font-bold text-lg sm:text-xl mb-1">Hosting Gratis</div>
+                        <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">Sin pagos mensuales obligatorios</div>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-white/80 dark:bg-zinc-900/80 border border-slate-200/80 dark:border-zinc-800/80 backdrop-blur-sm">
+                        <div class="text-brand-600 dark:text-brand-400 font-bold text-lg sm:text-xl mb-1">Soporte Directo</div>
+                        <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">Atención personalizada por WhatsApp</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección Servicios -->
+        <section id="servicios" class="py-16 sm:py-24 bg-slate-100/50 dark:bg-zinc-900/30 border-y border-slate-200 dark:border-zinc-800/80">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
+                    <h2 class="text-xs font-bold uppercase tracking-widest text-brand-600 dark:text-brand-400 mb-3">Nuestros Servicios</h2>
+                    <h3 class="text-2xl sm:text-4xl font-extrabold tracking-tight mb-4">Soluciones digitales a tu medida</h3>
+                    <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400">Todo lo que necesitas para destacar en internet con calidad profesional.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+                    <!-- Servicio 1 -->
+                    <div class="p-6 sm:p-8 rounded-3xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xl shadow-slate-100 dark:shadow-none hover:border-brand-500 transition-all group">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center mb-5 sm:mb-6 group-hover:bg-brand-600 group-hover:text-white transition-all">
+                            <i data-lucide="layout" class="w-6 h-6 sm:w-7 sm:h-7"></i>
+                        </div>
+                        <h4 class="text-lg sm:text-xl font-bold mb-2.5 sm:mb-3">Páginas Web Corporativas</h4>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                            Sitios web modernos, rápidos y elegantes diseñados para mostrar tu marca, servicios y captar clientes potenciales 24/7.
+                        </p>
+                    </div>
+
+                    <!-- Servicio 2 -->
+                    <div class="p-6 sm:p-8 rounded-3xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xl shadow-slate-100 dark:shadow-none hover:border-brand-500 transition-all group">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center mb-5 sm:mb-6 group-hover:bg-brand-600 group-hover:text-white transition-all">
+                            <i data-lucide="shopping-bag" class="w-6 h-6 sm:w-7 sm:h-7"></i>
+                        </div>
+                        <h4 class="text-lg sm:text-xl font-bold mb-2.5 sm:mb-3">Catálogos & E-commerce</h4>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                            Tiendas online y catálogos interactivos con conexión directa a WhatsApp para cerrar ventas de forma ágil y sin comisiones ocultas.
+                        </p>
+                    </div>
+
+                    <!-- Servicio 3 -->
+                    <div class="p-6 sm:p-8 rounded-3xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xl shadow-slate-100 dark:shadow-none hover:border-brand-500 transition-all group">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center mb-5 sm:mb-6 group-hover:bg-brand-600 group-hover:text-white transition-all">
+                            <i data-lucide="zap" class="w-6 h-6 sm:w-7 sm:h-7"></i>
+                        </div>
+                        <h4 class="text-lg sm:text-xl font-bold mb-2.5 sm:mb-3">Optimización y SEO</h4>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                            Mejoramos la velocidad de carga, adaptabilidad móvil y posicionamiento inicial en buscadores para que te encuentren más fácil.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección Portafolio -->
+        <section id="proyectos" class="py-16 sm:py-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 sm:mb-12 gap-4 sm:gap-6">
+                    <div>
+                        <h2 class="text-xs font-bold uppercase tracking-widest text-brand-600 dark:text-brand-400 mb-2 sm:mb-3">Nuestro Trabajo</h2>
+                        <h3 class="text-2xl sm:text-4xl font-extrabold tracking-tight">Portafolio de Creaciones</h3>
+                    </div>
+
+                    <!-- Controles: Botón Agregar Link (Solo Admin) + Filtros -->
+                    <div class="flex flex-wrap items-center gap-2.5 sm:gap-3">
+                        <div id="admin-toolbar" class="hidden items-center gap-2 flex-wrap">
+                            <button type="button" id="open-add-project-btn" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:opacity-90 shadow-md transition-all">
+                                <i data-lucide="plus" class="w-4 h-4"></i>
+                                <span>Subir Web</span>
+                            </button>
+                            <button type="button" id="export-portfolio-btn" title="Descargar respaldo JSON" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 hover:bg-emerald-600 hover:text-white transition-all">
+                                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                                <span>Respaldar</span>
+                            </button>
+                            <button type="button" id="admin-logout-btn" title="Cerrar sesión de administrador" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 hover:bg-rose-500 hover:text-white transition-all">
+                                <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+                                <span>Salir Admin</span>
+                            </button>
+                            <div class="h-6 w-px bg-slate-200 dark:bg-zinc-800 hidden sm:block"></div>
+                        </div>
+
+                        <!-- Botones Interactivos de Filtrado -->
+                        <div id="portfolio-filters" class="flex items-center gap-1.5 sm:gap-2 bg-slate-100 dark:bg-zinc-900 p-1.5 rounded-2xl border border-slate-200 dark:border-zinc-800">
+                            <button type="button" data-filter="all" class="filter-btn px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-semibold bg-white dark:bg-zinc-800 text-slate-900 dark:text-white shadow-sm transition-all">Todos</button>
+                            <button type="button" data-filter="links" class="filter-btn px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 transition-all">Mis Links</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grid de Proyectos -->
+                <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+                    <!-- Se llena de forma segura mediante DOM API -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección Contacto -->
+        <section id="contacto" class="py-16 sm:py-24 bg-slate-100/50 dark:bg-zinc-900/30 border-t border-slate-200 dark:border-zinc-800/80">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-12 items-center">
+                    <div>
+                        <h2 class="text-xs font-bold uppercase tracking-widest text-brand-600 dark:text-brand-400 mb-3">Hablemos</h2>
+                        <h3 class="text-2xl sm:text-4xl font-extrabold tracking-tight mb-4 sm:mb-6">¿Listo para impulsar tu presencia digital?</h3>
+                        <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400 mb-6 sm:mb-8 leading-relaxed">
+                            Escríbenos o utiliza nuestro cotizador interactivo para calcular el valor exacto de tu próxima página web. Te responderemos en pocos minutos.
+                        </p>
+
+                        <div class="space-y-3 sm:space-y-4">
+                            <div class="flex items-center gap-3.5 sm:gap-4 p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800">
+                                <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold shrink-0">
+                                    <i data-lucide="mail" class="w-5 h-5"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">Correo Electrónico</div>
+                                    <div class="font-semibold text-sm break-all">luiscastrobarandica@gmail.com</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-3.5 sm:gap-4 p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800">
+                                <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold shrink-0">
+                                    <i data-lucide="message-circle" class="w-5 h-5"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">WhatsApp Directo</div>
+                                    <div class="font-semibold text-sm">+57 300 421 0424</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Formulario de Contacto -->
+                    <div class="p-6 sm:p-10 rounded-3xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-2xl">
+                        <form id="contact-form" class="space-y-4 sm:space-y-5">
+                            <div>
+                                <label for="contact-name" class="block text-xs font-bold uppercase tracking-wider mb-2 text-slate-600 dark:text-slate-400">Tu Nombre</label>
+                                <input type="text" id="contact-name" maxlength="100" required placeholder="Ej. Carlos Mendoza" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 focus:outline-none focus:border-brand-500 text-sm">
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="contact-email" class="block text-xs font-bold uppercase tracking-wider mb-2 text-slate-600 dark:text-slate-400">Correo Electrónico</label>
+                                    <input type="email" id="contact-email" maxlength="120" required placeholder="carlos@correo.com" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 focus:outline-none focus:border-brand-500 text-sm">
+                                </div>
+                                <div>
+                                    <label for="contact-phone" class="block text-xs font-bold uppercase tracking-wider mb-2 text-slate-600 dark:text-slate-400">WhatsApp / Teléfono</label>
+                                    <input type="tel" id="contact-phone" maxlength="20" required placeholder="Ej. 300 123 4567" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 focus:outline-none focus:border-brand-500 text-sm">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="contact-message" class="block text-xs font-bold uppercase tracking-wider mb-2 text-slate-600 dark:text-slate-400">Mensaje o Detalles del Proyecto</label>
+                                <textarea id="contact-message" rows="4" maxlength="1500" required placeholder="Cuéntanos sobre tu negocio y qué tipo de página web necesitas..." class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 focus:outline-none focus:border-brand-500 text-sm"></textarea>
+                            </div>
+
+                            <div id="contact-feedback" class="hidden text-xs font-medium p-3 rounded-xl"></div>
+
+                            <button type="submit" id="contact-submit-btn" class="w-full py-3.5 sm:py-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm shadow-lg shadow-brand-500/25 transition-all flex items-center justify-center gap-2">
+                                <i data-lucide="send" class="w-4 h-4"></i>
+                                <span>Enviar Mensaje</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-200 dark:border-zinc-800/80 bg-white dark:bg-zinc-950 py-10 pb-24 sm:py-12 sm:pb-28">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6 text-center md:text-left">
+            <div class="flex items-center justify-center md:justify-start gap-3">
+                <div class="w-9 h-9 rounded-xl bg-brand-600 text-white flex items-center justify-center font-bold text-sm shrink-0">LB</div>
+                <span class="text-xs sm:text-sm font-semibold">LB Studio &copy; 2026. Todos los derechos reservados.</span>
+            </div>
+
+            <div class="flex items-center justify-center gap-3 sm:gap-4 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+                <span>Desarrollado en Colombia</span>
+                <span class="w-1 h-1 rounded-full bg-slate-300 dark:bg-zinc-700"></span>
+                <a href="#inicio" class="hover:text-slate-950 dark:hover:text-white transition-colors">Volver arriba</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Botón Flotante de WhatsApp -->
+    <a href="https://wa.me/573004210424?text=Hola%20LB%20Studio,%20quiero%20cotizar%20una%20página%20web" target="_blank" rel="noopener noreferrer" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white flex items-center justify-center shadow-2xl shadow-emerald-500/40 hover:scale-110 transition-all" aria-label="Contactar por WhatsApp">
+        <i data-lucide="message-circle" class="w-6 h-6 sm:w-7 sm:h-7"></i>
+    </a>
+
+    <!-- MODAL 1: Cotizador Instantáneo -->
+    <div id="calculator-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/75 backdrop-blur-sm p-3 sm:p-4 overflow-y-auto">
+        <div class="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-3xl max-w-lg w-full p-5 sm:p-8 shadow-2xl relative my-auto max-h-[92vh] overflow-y-auto">
+            <button type="button" class="close-modal-btn absolute top-4 right-4 sm:top-5 sm:right-5 p-2 rounded-xl bg-slate-100 dark:bg-zinc-800 text-slate-500 hover:text-slate-800 dark:hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <h3 class="text-lg sm:text-xl font-bold mb-1 pr-8">Cotizador Instantáneo (COP)</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-5 sm:mb-6">Base desde $500.000 COP — ajusta según el nivel de complejidad</p>
+
+            <div class="space-y-5 sm:space-y-6">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-slate-600 dark:text-slate-400">Nivel de Complejidad</label>
+                    <select id="calc-type" class="w-full px-3.5 py-3 rounded-xl bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-sm font-medium focus:outline-none focus:border-brand-500">
+                        <option value="500000" data-desc="Ideal para presencia rápida: 1 página informativa moderna con botón directo a WhatsApp y redes sociales.">Esencial / Informativa ($500.000 COP)</option>
+                        <option value="900000" data-desc="Ideal para negocios y marcas: Hasta 5 secciones, diseño personalizado, optimización móvil avanzada.">Profesional / Negocio ($900.000 COP)</option>
+                        <option value="1500000" data-desc="Solución completa: Catálogo de productos, múltiples páginas, sistema avanzado y velocidad superior.">Avanzada / Catálogo ($1.500.000 COP)</option>
+                        <option value="2500000" data-desc="Desarrollo especializado a la medida con integraciones especiales y bases de datos dinámicas.">A Medida / E-commerce ($2.500.000 COP)</option>
+                    </select>
+                    <p id="calc-desc" class="text-xs text-slate-500 dark:text-slate-400 mt-2">Ideal para presencia rápida: 1 página informativa moderna con botón directo a WhatsApp y redes sociales.</p>
+                </div>
+
+                <div>
+                    <div class="flex flex-wrap justify-between gap-1 text-xs font-bold uppercase tracking-wider mb-2 text-slate-600 dark:text-slate-400">
+                        <span>Secciones adicionales</span>
+                        <span id="calc-pages-val" class="text-brand-600 dark:text-brand-400">0 adicionales (+$0)</span>
+                    </div>
+                    <input type="range" id="calc-pages" min="0" max="10" value="0" class="w-full accent-brand-600 cursor-pointer h-2">
+                </div>
+
+                <div class="p-3.5 sm:p-4 rounded-2xl bg-slate-50 dark:bg-zinc-800/50 border border-slate-200 dark:border-zinc-800">
+                    <label class="flex items-start sm:items-center gap-3 cursor-pointer">
+                        <input type="checkbox" id="calc-seo" class="mt-0.5 sm:mt-0 w-4 h-4 rounded text-brand-600 focus:ring-brand-500 accent-brand-600 shrink-0">
+                        <span class="text-xs sm:text-sm font-medium">Paquete SEO & Velocidad Avanzada <span class="text-[11px] sm:text-xs text-brand-600 dark:text-brand-400 block font-normal">Posicionamiento inicial en Google (+$250.000 COP)</span></span>
+                    </label>
+                </div>
+
+                <div class="p-4 sm:p-5 rounded-2xl bg-brand-500/10 border border-brand-500/20 flex flex-wrap items-center justify-between gap-2">
+                    <span class="text-xs sm:text-sm font-semibold">Inversión estimada:</span>
+                    <span id="calc-total" class="text-xl sm:text-2xl font-extrabold text-brand-600 dark:text-brand-400">$500.000 COP</span>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
+                    <button type="button" id="calc-whatsapp-btn" class="flex-1 py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs sm:text-sm shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2">
+                        <i data-lucide="message-circle" class="w-4 h-4 shrink-0"></i>
+                        <span>Enviar por WhatsApp</span>
+                    </button>
+                    <button type="button" id="apply-quote-btn" class="flex-1 py-3.5 px-4 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold text-xs sm:text-sm shadow-lg transition-all flex items-center justify-center gap-2">
+                        <span>Pasar al formulario</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: Login de Administrador (Firebase Authentication) -->
+    <div id="admin-login-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/75 backdrop-blur-sm p-3 sm:p-4 overflow-y-auto">
+        <div class="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-3xl max-w-sm w-full p-5 sm:p-8 shadow-2xl relative my-auto">
+            <button type="button" class="close-modal-btn absolute top-4 right-4 sm:top-5 sm:right-5 p-2 rounded-xl bg-slate-100 dark:bg-zinc-800 text-slate-500 hover:text-slate-800 dark:hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="w-12 h-12 rounded-2xl bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center mb-4 sm:mb-5">
+                <i data-lucide="shield-check" class="w-6 h-6"></i>
+            </div>
+
+            <h3 class="text-lg sm:text-xl font-bold mb-1">Acceso Administrador</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-5 sm:mb-6">Inicia sesión con tu cuenta autorizada de Firebase Auth</p>
+
+            <form id="admin-login-form" class="space-y-4">
+                <div>
+                    <input type="email" id="admin-email-input" required placeholder="Correo administrador" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-sm focus:outline-none focus:border-brand-500">
+                </div>
+                <div>
+                    <input type="password" id="admin-password-input" required placeholder="Contraseña" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-sm focus:outline-none focus:border-brand-500">
+                </div>
+                <div id="admin-login-error" class="hidden text-xs text-rose-500 font-medium"></div>
+                <button type="submit" id="admin-login-submit" class="w-full py-3.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm shadow-lg shadow-brand-500/25 transition-all">
+                    Iniciar Sesión Segura
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 3: Agregar o Editar Proyecto (Sincronizado con Firestore) -->
+    <div id="project-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/75 backdrop-blur-sm p-3 sm:p-4 overflow-y-auto">
+        <div class="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-3xl max-w-lg w-full p-5 sm:p-8 shadow-2xl relative my-auto max-h-[92vh] overflow-y-auto">
+            <button type="button" class="close-modal-btn absolute top-4 right-4 sm:top-5 sm:right-5 p-2 rounded-xl bg-slate-100 dark:bg-zinc-800 text-slate-500 hover:text-slate-800 dark:hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <h3 id="project-modal-title" class="text-lg sm:text-xl font-bold mb-5 sm:mb-6 pr-8">Subir Nuevo Proyecto</h3>
+
+            <form id="project-form" class="space-y-4">
+                <input type="hidden" id="project-edit-id" value="">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-slate-600 dark:text-slate-400">Título del Proyecto</label>
+                    <input type="text" id="project-title" maxlength="80" required placeholder="Ej. AAFRIGAMAG" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-sm focus:outline-none focus:border-brand-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-slate-600 dark:text-slate-400">Categoría</label>
+                    <select id="project-category" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-sm font-medium focus:outline-none focus:border-brand-500">
+                        <option value="links">Mis Links / Personal</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-slate-600 dark:text-slate-400">URL de la Web (https://)</label>
+                    <input type="url" id="project-url" required placeholder="https://tudominio.com" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-sm focus:outline-none focus:border-brand-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-slate-600 dark:text-slate-400">URL de la Imagen de Portada (https://)</label>
+                    <input type="url" id="project-img" required placeholder="https://images.unsplash.com/..." class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-sm focus:outline-none focus:border-brand-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-slate-600 dark:text-slate-400">Descripción Corta</label>
+                    <textarea id="project-desc" rows="3" maxlength="300" required placeholder="Breve descripción de lo que trata la página..." class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-sm focus:outline-none focus:border-brand-500"></textarea>
+                </div>
+
+                <button type="submit" id="project-save-btn" class="w-full py-3.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm shadow-lg shadow-brand-500/25 transition-all">
+                    Guardar y Publicar Proyecto
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 4: Bandeja de Mensajes Recibidos (Solo Admin Autenticado) -->
+    <div id="messages-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/75 backdrop-blur-sm p-3 sm:p-4">
+        <div class="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-3xl max-w-2xl w-full p-5 sm:p-8 shadow-2xl relative max-h-[88vh] flex flex-col">
+            <button type="button" class="close-modal-btn absolute top-4 right-4 sm:top-5 sm:right-5 p-2 rounded-xl bg-slate-100 dark:bg-zinc-800 text-slate-500 hover:text-slate-800 dark:hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="flex items-center gap-3 mb-4 sm:mb-5 pr-8">
+                <div class="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center shadow-lg shadow-brand-500/30 shrink-0">
+                    <i data-lucide="inbox" class="w-5 h-5"></i>
+                </div>
+                <div class="min-w-0">
+                    <h3 class="text-lg sm:text-xl font-bold truncate">Bandeja de Mensajes</h3>
+                    <p id="db-connection-status" class="text-xs text-slate-500 dark:text-slate-400 truncate">Verificando conexión segura...</p>
+                </div>
+            </div>
+
+            <div id="messages-list" class="space-y-3 overflow-y-auto pr-1 flex-1">
+                <!-- Renderizado seguro vía DOM API -->
+            </div>
+        </div>
+    </div>
+
+
+    <style>
+      /* Pequeño respaldo cuando la librería de íconos externa no carga */
+      i[data-lucide] { display:inline-flex; align-items:center; justify-content:center; width:1.25rem; height:1.25rem; }
+    </style>
+
+    <!-- Firebase y Lógica Segura -->
+    <script>
+        // El comportamiento de la interfaz no depende de importar Firebase.
+        let initializeApp, getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged;
+        let getFirestore, collection, addDoc, query, onSnapshot, deleteDoc, doc, updateDoc, serverTimestamp;
+
+        // =========================================================================
+        // CONFIGURACIÓN DE FIREBASE (Reemplazar con tus credenciales reales de Firebase)
+        // =========================================================================
+        const EXTERNAL_FIREBASE_CONFIG = {
+            apiKey: "",
+            authDomain: "",
+            projectId: "",
+            storageBucket: "",
+            messagingSenderId: "",
+            appId: ""
+        };
+        const AUTHORIZED_ADMIN_EMAIL = "luiscastrobarandica@gmail.com";
+
+        let db = null;
+        let auth = null;
+        let currentAdminUser = null;
+        let messagesUnsubscribe = null;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'lb-studio-colombia';
+
+        // SVG Inline seguro para respaldo de imágenes rotas
+        const FALLBACK_SVG_IMG = "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(
+            `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">
+                <rect width="800" height="450" fill="#4f46e5"/>
+                <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-size="36" font-weight="bold">LB Studio</text>
+            </svg>`
+        );
+
+        // Utilidad de validación estricta de URLs
+        function sanitizeUrl(rawUrl, fallback = "#") {
+            if (!rawUrl || typeof rawUrl !== 'string') return fallback;
+            try {
+                const parsed = new URL(rawUrl.trim());
+                if (parsed.protocol === 'https:' || parsed.protocol === 'http:') {
+                    return parsed.href;
+                }
+            } catch (_) {}
+            return fallback;
+        }
+
+        // Utilidad para formatear número colombiano para WhatsApp
+        function formatColombianWhatsApp(rawPhone) {
+            if (!rawPhone) return "";
+            const digits = String(rawPhone).replace(/\D/g, '');
+            if (digits.length === 10 && digits.startsWith('3')) return `57${digits}`;
+            if (digits.length === 12 && digits.startsWith('57')) return digits;
+            return digits;
+        }
+
+        // Inicialización de Firebase
+        async function initFirebaseServices() {
+            try {
+                let configToUse = null;
+                if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+                    configToUse = JSON.parse(__firebase_config);
+                } else if (EXTERNAL_FIREBASE_CONFIG.apiKey && EXTERNAL_FIREBASE_CONFIG.projectId) {
+                    configToUse = EXTERNAL_FIREBASE_CONFIG;
+                }
+
+                if (configToUse) {
+                    const [appModule, authModule, firestoreModule] = await Promise.all([
+                        import("https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js"),
+                        import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js"),
+                        import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js")
+                    ]);
+                    ({ initializeApp } = appModule);
+                    ({ getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } = authModule);
+                    ({ getFirestore, collection, addDoc, query, onSnapshot, deleteDoc, doc, updateDoc, serverTimestamp } = firestoreModule);
+                    const app = initializeApp(configToUse);
+                    db = getFirestore(app);
+                    auth = getAuth(app);
+
+                    onAuthStateChanged(auth, (user) => {
+                        if (user && !user.isAnonymous && user.email && user.email.toLowerCase() === AUTHORIZED_ADMIN_EMAIL.toLowerCase()) {
+                            currentAdminUser = user;
+                            updateAdminUI(true);
+                            startListeningMessages();
+                        } else {
+                            currentAdminUser = null;
+                            updateAdminUI(false);
+                            if (messagesUnsubscribe) {
+                                messagesUnsubscribe();
+                                messagesUnsubscribe = null;
+                            }
+                        }
+                    });
+
+                    startListeningProjects();
+                }
+            } catch (e) {
+                console.error("Error inicializando Firebase:", e);
+            }
+        }
+
+        // Datos base iniciales del portafolio
+        const defaultProjects = [
+            {
+                id: "default-1",
+                title: "AAFRIGAMAG",
+                category: "links",
+                url: "https://aafrigamag.site",
+                img: "https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?auto=format&fit=crop&w=800&q=80",
+                desc: "Plataforma oficial enfocada en el desarrollo social, cultural, comunitario y fortalecimiento territorial.",
+                isDefault: true
+            },
+            {
+                id: "default-2",
+                title: "Universo 22",
+                category: "links",
+                url: "https://universo22.lat",
+                img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80",
+                desc: "Sitio web interactivo para experiencia gastronómica y carta digital de restaurante.",
+                isDefault: true
+            }
+        ];
+
+        let projects = [...defaultProjects];
+        let currentFilter = 'all';
+
+        function startListeningProjects() {
+            if (!db) return;
+            try {
+                const q = query(collection(db, 'artifacts', appId, 'public', 'data', 'projects'));
+                onSnapshot(q, (snapshot) => {
+                    const cloudProjects = [];
+                    snapshot.forEach(docSnap => {
+                        cloudProjects.push({ id: docSnap.id, ...docSnap.data(), isDefault: false });
+                    });
+                    projects = cloudProjects.length > 0 ? cloudProjects : [...defaultProjects];
+                    renderProjects(currentFilter);
+                }, (err) => {
+                    console.warn("Lectura pública de proyectos no disponible:", err);
+                });
+            } catch (e) {
+                console.warn("Error al suscribir proyectos:", e);
+            }
+        }
+
+        function renderProjects(filter = 'all') {
+            const grid = document.getElementById('projects-grid');
+            if (!grid) return;
+            grid.replaceChildren();
+
+            const filtered = filter === 'all' ? projects : projects.filter(p => p.category === filter);
+
+            if (filtered.length === 0) {
+                const emptyDiv = document.createElement('div');
+                emptyDiv.className = "col-span-2 text-center py-12 text-slate-500 dark:text-slate-400";
+                emptyDiv.textContent = "No hay proyectos en esta categoría.";
+                grid.appendChild(emptyDiv);
+                return;
+            }
+
+            const isAdmin = Boolean(currentAdminUser);
+
+            filtered.forEach((p) => {
+                const card = document.createElement('div');
+                card.className = "group rounded-3xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 overflow-hidden shadow-xl shadow-slate-100 dark:shadow-none flex flex-col justify-between hover:border-brand-500 transition-all";
+
+                const topWrapper = document.createElement('div');
+                const imgContainer = document.createElement('div');
+                imgContainer.className = "relative aspect-video overflow-hidden bg-slate-100 dark:bg-zinc-800";
+
+                const img = document.createElement('img');
+                img.src = sanitizeUrl(p.img, FALLBACK_SVG_IMG);
+                img.alt = p.title || "Proyecto LB Studio";
+                img.loading = "lazy";
+                img.className = "w-full h-full object-cover group-hover:scale-105 transition-transform duration-500";
+                img.onerror = () => { img.src = FALLBACK_SVG_IMG; };
+
+                const badge = document.createElement('span');
+                badge.className = "absolute top-3 left-3 sm:top-4 sm:left-4 px-2.5 sm:px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-900/80 text-white backdrop-blur-md";
+                badge.textContent = p.category === 'links' ? 'Mis Links' : (p.category || 'Web');
+
+                imgContainer.appendChild(img);
+                imgContainer.appendChild(badge);
+
+                const bodyDiv = document.createElement('div');
+                bodyDiv.className = "p-5 sm:p-6";
+
+                const titleEl = document.createElement('h4');
+                titleEl.className = "text-lg sm:text-xl font-bold mb-2";
+                titleEl.textContent = p.title || "Sin título";
+
+                const descEl = document.createElement('p');
+                descEl.className = "text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-3 sm:mb-4";
+                descEl.textContent = p.desc || "";
+
+                bodyDiv.appendChild(titleEl);
+                bodyDiv.appendChild(descEl);
+
+                topWrapper.appendChild(imgContainer);
+                topWrapper.appendChild(bodyDiv);
+
+                const footerDiv = document.createElement('div');
+                footerDiv.className = "px-5 pb-5 sm:px-6 sm:pb-6 pt-0 flex items-center justify-between gap-2.5 sm:gap-3";
+
+                const visitLink = document.createElement('a');
+                visitLink.href = sanitizeUrl(p.url, "#proyectos");
+                visitLink.target = "_blank";
+                visitLink.rel = "noopener noreferrer";
+                visitLink.className = "flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs shadow-md shadow-brand-500/20 transition-all";
+                visitLink.textContent = "Visitar Sitio Web ";
+
+                const extIcon = document.createElement('i');
+                extIcon.setAttribute('data-lucide', 'external-link');
+                extIcon.className = "w-3.5 h-3.5 shrink-0";
+                visitLink.appendChild(extIcon);
+
+                footerDiv.appendChild(visitLink);
+
+                if (isAdmin && !p.isDefault) {
+                    const adminActions = document.createElement('div');
+                    adminActions.className = "flex items-center gap-1 shrink-0";
+
+                    const editBtn = document.createElement('button');
+                    editBtn.type = "button";
+                    editBtn.title = "Editar proyecto";
+                    editBtn.className = "p-2.5 rounded-xl bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-slate-300 hover:bg-brand-500 hover:text-white transition-all";
+                    editBtn.innerHTML = '<i data-lucide="edit-3" class="w-4 h-4"></i>';
+                    editBtn.addEventListener('click', () => openEditProjectModal(p));
+
+                    const delBtn = document.createElement('button');
+                    delBtn.type = "button";
+                    delBtn.title = "Eliminar proyecto";
+                    delBtn.className = "p-2.5 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500 hover:text-white transition-all";
+                    delBtn.innerHTML = '<i data-lucide="trash-2" class="w-4 h-4"></i>';
+                    delBtn.addEventListener('click', () => deleteCloudProject(p.id));
+
+                    adminActions.appendChild(editBtn);
+                    adminActions.appendChild(delBtn);
+                    footerDiv.appendChild(adminActions);
+                }
+
+                card.appendChild(topWrapper);
+                card.appendChild(footerDiv);
+                grid.appendChild(card);
+            });
+
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function updateAdminUI(logged) {
+            const toolbar = document.getElementById('admin-toolbar');
+            const adminStatus = document.getElementById('admin-header-status');
+            const adminMobileStatus = document.getElementById('admin-mobile-status');
+            const headerMsgBtn = document.getElementById('header-messages-btn');
+            const mobileMsgBtn = document.getElementById('mobile-messages-btn');
+
+            if (logged) {
+                toolbar?.classList.remove('hidden');
+                toolbar?.classList.add('flex');
+                if (adminStatus) adminStatus.textContent = 'Admin (Activo)';
+                if (adminMobileStatus) adminMobileStatus.textContent = 'Panel Admin (Activo)';
+                headerMsgBtn?.classList.remove('sm:hidden');
+                headerMsgBtn?.classList.add('sm:inline-flex');
+                mobileMsgBtn?.classList.remove('hidden');
+                mobileMsgBtn?.classList.add('flex');
+            } else {
+                toolbar?.classList.remove('flex');
+                toolbar?.classList.add('hidden');
+                if (adminStatus) adminStatus.textContent = 'Admin';
+                if (adminMobileStatus) adminMobileStatus.textContent = 'Acceso Admin';
+                headerMsgBtn?.classList.remove('sm:inline-flex');
+                headerMsgBtn?.classList.add('sm:hidden');
+                mobileMsgBtn?.classList.remove('flex');
+                mobileMsgBtn?.classList.add('hidden');
+            }
+            renderProjects(currentFilter);
+        }
+
+        function openEditProjectModal(p) {
+            document.getElementById('project-edit-id').value = p.id;
+            document.getElementById('project-modal-title').textContent = 'Editar Proyecto';
+            document.getElementById('project-title').value = p.title || '';
+            document.getElementById('project-category').value = p.category || 'links';
+            document.getElementById('project-url').value = p.url || '';
+            document.getElementById('project-img').value = p.img || '';
+            document.getElementById('project-desc').value = p.desc || '';
+
+            const modal = document.getElementById('project-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        async function deleteCloudProject(id) {
+            if (!db || !currentAdminUser) return;
+            if (!confirm('¿Estás seguro de eliminar este proyecto de la nube?')) return;
+            try {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'projects', id));
+            } catch (err) {
+                alert('No se pudo eliminar el proyecto. Verifica los permisos de Firestore.');
+                console.error(err);
+            }
+        }
+
+        function startListeningMessages() {
+            if (!db || !currentAdminUser) return;
+            if (messagesUnsubscribe) messagesUnsubscribe();
+
+            const statusEl = document.getElementById('db-connection-status');
+            if (statusEl) statusEl.textContent = 'Conectado de forma segura como Administrador';
+
+            const q = query(collection(db, 'artifacts', appId, 'public', 'data', 'messages'));
+            messagesUnsubscribe = onSnapshot(q, (snapshot) => {
+                const list = document.getElementById('messages-list');
+                const badgeHeader = document.getElementById('unread-messages-badge-header');
+                const badgeMobile = document.getElementById('unread-messages-badge-mobile');
+                if (!list) return;
+                list.replaceChildren();
+
+                let unreadCount = 0;
+                const msgs = [];
+                snapshot.forEach(docSnap => {
+                    msgs.push({ id: docSnap.id, ...docSnap.data() });
+                });
+
+                msgs.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+
+                if (msgs.length === 0) {
+                    const empty = document.createElement('div');
+                    empty.className = "text-center py-12 text-slate-500 dark:text-slate-400";
+                    empty.textContent = "No hay mensajes recibidos aún.";
+                    list.appendChild(empty);
+                    if (badgeHeader) badgeHeader.textContent = '0';
+                    if (badgeMobile) badgeMobile.textContent = '0';
+                    return;
+                }
+
+                msgs.forEach(m => {
+                    if (!m.read) unreadCount++;
+                    const card = document.createElement('div');
+                    card.className = `p-3.5 sm:p-4 rounded-2xl border ${m.read ? 'bg-slate-50 dark:bg-zinc-800/40 border-slate-200 dark:border-zinc-800' : 'bg-brand-500/5 border-brand-500/40'}`;
+
+                    const headerRow = document.createElement('div');
+                    headerRow.className = "flex flex-wrap items-center justify-between gap-1.5 mb-2";
+
+                    const senderInfo = document.createElement('div');
+                    senderInfo.className = "font-bold text-sm flex flex-wrap items-center gap-1.5 break-all";
+
+                    const nameSpan = document.createElement('span');
+                    nameSpan.textContent = m.name || "Sin nombre";
+                    senderInfo.appendChild(nameSpan);
+
+                    const emailSpan = document.createElement('span');
+                    emailSpan.className = "text-xs font-normal text-slate-500 dark:text-slate-400";
+                    emailSpan.textContent = `(${m.email || "sin correo"})`;
+                    senderInfo.appendChild(emailSpan);
+
+                    if (m.phone) {
+                        const phoneSpan = document.createElement('span');
+                        phoneSpan.className = "text-xs font-medium text-emerald-600 dark:text-emerald-400";
+                        phoneSpan.textContent = `• ${m.phone}`;
+                        senderInfo.appendChild(phoneSpan);
+                    }
+
+                    const dateSpan = document.createElement('div');
+                    dateSpan.className = "text-[11px] text-slate-400";
+                    dateSpan.textContent = m.date ? new Date(m.date).toLocaleString('es-CO') : '';
+
+                    headerRow.appendChild(senderInfo);
+                    headerRow.appendChild(dateSpan);
+
+                    const bodyP = document.createElement('p');
+                    bodyP.className = "text-sm text-slate-700 dark:text-slate-300 mb-3 whitespace-pre-wrap break-words";
+                    bodyP.textContent = m.message || "";
+
+                    const actionsRow = document.createElement('div');
+                    actionsRow.className = "flex flex-wrap items-center gap-2";
+
+                    const mailLink = document.createElement('a');
+                    mailLink.href = `mailto:${encodeURIComponent(m.email || '')}?subject=${encodeURIComponent('Respuesta LB Studio')}`;
+                    mailLink.className = "px-3 py-1.5 rounded-xl bg-brand-600 text-white text-xs font-semibold hover:bg-brand-700 transition-all";
+                    mailLink.textContent = "Correo";
+                    actionsRow.appendChild(mailLink);
+
+                    const waDigits = formatColombianWhatsApp(m.phone);
+                    const waLink = document.createElement('a');
+                    const replyText = `Hola ${m.name || ''}, te saludamos de LB Studio respecto a tu solicitud en nuestra web.`;
+                    waLink.href = waDigits
+                        ? `https://wa.me/${waDigits}?text=${encodeURIComponent(replyText)}`
+                        : `https://wa.me/?text=${encodeURIComponent(replyText)}`;
+                    waLink.target = "_blank";
+                    waLink.rel = "noopener noreferrer";
+                    waLink.className = "px-3 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 transition-all";
+                    waLink.textContent = waDigits ? "WhatsApp Directo" : "WhatsApp";
+                    actionsRow.appendChild(waLink);
+
+                    const toggleReadBtn = document.createElement('button');
+                    toggleReadBtn.type = "button";
+                    toggleReadBtn.className = "px-3 py-1.5 rounded-xl bg-slate-200/70 dark:bg-zinc-700 text-slate-700 dark:text-slate-200 text-xs font-semibold hover:bg-slate-300 dark:hover:bg-zinc-600 transition-all";
+                    toggleReadBtn.textContent = m.read ? "Marcar no leído" : "Marcar leído";
+                    toggleReadBtn.addEventListener('click', async () => {
+                        try {
+                            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', m.id), {
+                                read: !m.read
+                            });
+                        } catch (err) {
+                            console.error("Error actualizando estado leído:", err);
+                        }
+                    });
+                    actionsRow.appendChild(toggleReadBtn);
+
+                    const delBtn = document.createElement('button');
+                    delBtn.type = "button";
+                    delBtn.className = "ml-auto px-3 py-1.5 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 text-xs font-semibold hover:bg-rose-500 hover:text-white transition-all";
+                    delBtn.textContent = "Eliminar";
+                    delBtn.addEventListener('click', async () => {
+                        if (!confirm('¿Eliminar este mensaje permanentemente?')) return;
+                        try {
+                            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', m.id));
+                        } catch (err) {
+                            console.error("Error eliminando mensaje:", err);
+                        }
+                    });
+                    actionsRow.appendChild(delBtn);
+
+                    card.appendChild(headerRow);
+                    card.appendChild(bodyP);
+                    card.appendChild(actionsRow);
+                    list.appendChild(card);
+                });
+
+                if (badgeHeader) badgeHeader.textContent = String(unreadCount);
+                if (badgeMobile) badgeMobile.textContent = String(unreadCount);
+            }, (err) => {
+                if (statusEl) statusEl.textContent = 'Permisos insuficientes en Firestore para leer mensajes.';
+                console.error('Error escuchando mensajes:', err);
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            renderProjects('all');
+            initFirebaseServices();
+
+            // Modo Oscuro / Claro
+            const themeBtn = document.getElementById('theme-toggle-btn');
+            if (themeBtn) {
+                themeBtn.addEventListener('click', () => {
+                    document.documentElement.classList.toggle('dark');
+                    localStorage.setItem('lb_theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+                });
+            }
+            if (localStorage.getItem('lb_theme') === 'dark' || (!localStorage.getItem('lb_theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            }
+
+            // Menú Móvil
+            const mobileBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const closeMobileMenu = () => mobileMenu?.classList.add('hidden');
+
+            mobileBtn?.addEventListener('click', () => mobileMenu?.classList.toggle('hidden'));
+            document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                link.addEventListener('click', closeMobileMenu);
+            });
+
+            // Filtros de Portafolio
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.filter-btn').forEach(b => {
+                        b.classList.remove('bg-white', 'dark:bg-zinc-800', 'text-slate-900', 'dark:text-white', 'shadow-sm');
+                        b.classList.add('text-slate-600', 'dark:text-slate-400');
+                    });
+                    e.currentTarget.classList.add('bg-white', 'dark:bg-zinc-800', 'text-slate-900', 'dark:text-white', 'shadow-sm');
+                    e.currentTarget.classList.remove('text-slate-600', 'dark:text-slate-400');
+                    currentFilter = e.currentTarget.getAttribute('data-filter');
+                    renderProjects(currentFilter);
+                });
+            });
+
+            // Modales
+            const calcModal = document.getElementById('calculator-modal');
+            const adminLoginModal = document.getElementById('admin-login-modal');
+            const projectModal = document.getElementById('project-modal');
+            const messagesModal = document.getElementById('messages-modal');
+
+            const openModal = (m) => { if (m) { m.classList.remove('hidden'); m.classList.add('flex'); } };
+            const closeAllModals = () => {
+                [calcModal, adminLoginModal, projectModal, messagesModal].forEach(m => {
+                    if (m) { m.classList.add('hidden'); m.classList.remove('flex'); }
+                });
+            };
+
+            document.getElementById('open-calculator-hero-btn')?.addEventListener('click', () => openModal(calcModal));
+            document.getElementById('open-calculator-nav-btn')?.addEventListener('click', () => openModal(calcModal));
+            document.getElementById('open-calculator-mobile-btn')?.addEventListener('click', () => {
+                closeMobileMenu();
+                openModal(calcModal);
+            });
+
+            const handleAdminClick = () => {
+                closeMobileMenu();
+                if (currentAdminUser) {
+                    openModal(messagesModal);
+                } else {
+                    openModal(adminLoginModal);
+                }
+            };
+            document.getElementById('open-admin-login-btn')?.addEventListener('click', handleAdminClick);
+            document.getElementById('mobile-admin-btn')?.addEventListener('click', handleAdminClick);
+
+            document.getElementById('header-messages-btn')?.addEventListener('click', () => openModal(messagesModal));
+            document.getElementById('mobile-messages-btn')?.addEventListener('click', () => {
+                closeMobileMenu();
+                openModal(messagesModal);
+            });
+
+            document.getElementById('open-add-project-btn')?.addEventListener('click', () => {
+                document.getElementById('project-edit-id').value = '';
+                document.getElementById('project-modal-title').textContent = 'Subir Nuevo Proyecto';
+                document.getElementById('project-form').reset();
+                openModal(projectModal);
+            });
+
+            document.querySelectorAll('.close-modal-btn').forEach(btn => {
+                btn.addEventListener('click', closeAllModals);
+            });
+
+            // Cerrar modal tocando el fondo oscuro
+            [calcModal, adminLoginModal, projectModal, messagesModal].forEach(m => {
+                m?.addEventListener('click', (e) => {
+                    if (e.target === m) closeAllModals();
+                });
+            });
+
+            // Cotizador Lógica
+            const calcType = document.getElementById('calc-type');
+            const calcPages = document.getElementById('calc-pages');
+            const calcPagesVal = document.getElementById('calc-pages-val');
+            const calcSeo = document.getElementById('calc-seo');
+            const calcTotal = document.getElementById('calc-total');
+            const calcDesc = document.getElementById('calc-desc');
+
+            function updateCalculation() {
+                if (!calcType) return;
+                const basePrice = parseInt(calcType.value, 10);
+                const selectedOption = calcType.options[calcType.selectedIndex];
+                if (calcDesc) calcDesc.textContent = selectedOption.getAttribute('data-desc');
+
+                const pagesCount = parseInt(calcPages.value, 10);
+                const pagesExtra = pagesCount * 50000;
+                if (calcPagesVal) calcPagesVal.textContent = `${pagesCount} adicionales (+$${pagesExtra.toLocaleString('es-CO')})`;
+
+                const seoExtra = calcSeo.checked ? 250000 : 0;
+                const total = basePrice + pagesExtra + seoExtra;
+                calcTotal.textContent = `$${total.toLocaleString('es-CO')} COP`;
+            }
+
+            calcType?.addEventListener('change', updateCalculation);
+            calcPages?.addEventListener('input', updateCalculation);
+            calcSeo?.addEventListener('change', updateCalculation);
+            updateCalculation();
+
+            document.getElementById('calc-whatsapp-btn')?.addEventListener('click', () => {
+                const selectedTypeText = calcType.options[calcType.selectedIndex].text;
+                const pages = calcPages.value;
+                const seoText = calcSeo.checked ? 'Con paquete SEO Avanzado' : 'Sin SEO adicional';
+                const total = calcTotal.textContent;
+                const text = `Hola LB Studio, quiero cotizar una web:\n• Tipo: ${selectedTypeText}\n• Páginas extra: ${pages}\n• Extras: ${seoText}\n• Total estimado: ${total}`;
+                window.open(`https://wa.me/573004210424?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
+            });
+
+            document.getElementById('apply-quote-btn')?.addEventListener('click', () => {
+                const selectedTypeText = calcType.options[calcType.selectedIndex].text;
+                const pages = calcPages.value;
+                const seoText = calcSeo.checked ? 'Con paquete SEO Avanzado' : 'Sin SEO adicional';
+                const total = calcTotal.textContent;
+
+                const contactMsgBox = document.getElementById('contact-message');
+                if (contactMsgBox) {
+                    contactMsgBox.value = `Hola, realicé una cotización en su web:\n• Complejidad: ${selectedTypeText}\n• Páginas extra: ${pages}\n• Extras: ${seoText}\n• Total estimado: ${total}\n\nMe gustaría agendar una llamada.`;
+                }
+                closeAllModals();
+                document.getElementById('contacto')?.scrollIntoView({ behavior: 'smooth' });
+            });
+
+            // Login Admin mediante Firebase Authentication
+            document.getElementById('admin-login-form')?.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const errorBox = document.getElementById('admin-login-error');
+                const submitBtn = document.getElementById('admin-login-submit');
+                errorBox.classList.add('hidden');
+
+                if (!auth) {
+                    errorBox.textContent = "Firebase Authentication no está configurado. Revisa la guía de configuración.";
+                    errorBox.classList.remove('hidden');
+                    return;
+                }
+
+                const email = document.getElementById('admin-email-input').value.trim();
+                const pass = document.getElementById('admin-password-input').value;
+
+                if (email.toLowerCase() !== AUTHORIZED_ADMIN_EMAIL.toLowerCase()) {
+                    errorBox.textContent = "Correo no autorizado como administrador.";
+                    errorBox.classList.remove('hidden');
+                    return;
+                }
+
+                submitBtn.disabled = true;
+                submitBtn.textContent = "Verificando...";
+
+                try {
+                    await signInWithEmailAndPassword(auth, email, pass);
+                    document.getElementById('admin-login-form').reset();
+                    closeAllModals();
+                } catch (err) {
+                    errorBox.textContent = "Credenciales inválidas o usuario no habilitado en Firebase Auth.";
+                    errorBox.classList.remove('hidden');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = "Iniciar Sesión Segura";
+                }
+            });
+
+            // Logout Admin
+            document.getElementById('admin-logout-btn')?.addEventListener('click', async () => {
+                if (auth) {
+                    await signOut(auth);
+                }
+            });
+
+            // Guardar o Editar Proyecto en Cloud Firestore
+            document.getElementById('project-form')?.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (!db || !currentAdminUser) {
+                    alert("Debes iniciar sesión como administrador para publicar proyectos.");
+                    return;
+                }
+
+                const editId = document.getElementById('project-edit-id').value;
+                const title = document.getElementById('project-title').value.trim();
+                const category = document.getElementById('project-category').value;
+                const rawUrl = document.getElementById('project-url').value.trim();
+                const rawImg = document.getElementById('project-img').value.trim();
+                const desc = document.getElementById('project-desc').value.trim();
+
+                const validUrl = sanitizeUrl(rawUrl, "");
+                const validImg = sanitizeUrl(rawImg, "");
+
+                if (!validUrl || !validImg) {
+                    alert("Por favor ingresa URLs válidas que comiencen con https://");
+                    return;
+                }
+
+                const saveBtn = document.getElementById('project-save-btn');
+                saveBtn.disabled = true;
+                saveBtn.textContent = "Guardando en la nube...";
+
+                try {
+                    const payload = {
+                        title,
+                        category,
+                        url: validUrl,
+                        img: validImg,
+                        desc,
+                        updatedAt: serverTimestamp()
+                    };
+
+                    if (editId) {
+                        await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'projects', editId), payload);
+                    } else {
+                        await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'projects'), payload);
+                    }
+
+                    closeAllModals();
+                } catch (err) {
+                    console.error("Error guardando proyecto:", err);
+                    alert("Error al guardar en Firestore. Verifica las reglas de seguridad.");
+                } finally {
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = "Guardar y Publicar Proyecto";
+                }
+            });
+
+            // Respaldar / Exportar JSON
+            document.getElementById('export-portfolio-btn')?.addEventListener('click', () => {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(projects, null, 2));
+                const downloadAnchor = document.createElement('a');
+                downloadAnchor.setAttribute("href", dataStr);
+                downloadAnchor.setAttribute("download", "lb_portfolio_backup.json");
+                document.body.appendChild(downloadAnchor);
+                downloadAnchor.click();
+                downloadAnchor.remove();
+            });
+
+            // Formulario de Contacto
+            document.getElementById('contact-form')?.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const name = document.getElementById('contact-name').value.trim();
+                const email = document.getElementById('contact-email').value.trim();
+                const phone = document.getElementById('contact-phone').value.trim();
+                const message = document.getElementById('contact-message').value.trim();
+
+                const submitBtn = document.getElementById('contact-submit-btn');
+                const feedbackBox = document.getElementById('contact-feedback');
+                feedbackBox.classList.add('hidden');
+
+                if (!db) {
+                    feedbackBox.textContent = "El sistema de base de datos aún no está configurado en este servidor. Escríbenos directamente por WhatsApp al +57 300 421 0424.";
+                    feedbackBox.className = "text-xs font-medium p-3 rounded-xl bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20";
+                    return;
+                }
+
+                if (name.length < 2 || message.length < 5) {
+                    feedbackBox.textContent = "Por favor completa tu nombre y un mensaje válido.";
+                    feedbackBox.className = "text-xs font-medium p-3 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20";
+                    return;
+                }
+
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Enviando mensaje...';
+
+                try {
+                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'messages'), {
+                        name,
+                        email,
+                        phone,
+                        message,
+                        date: new Date().toISOString(),
+                        read: false
+                    });
+
+                    feedbackBox.textContent = "¡Mensaje guardado con éxito! Nos pondremos en contacto contigo muy pronto.";
+                    feedbackBox.className = "text-xs font-medium p-3 rounded-xl bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20";
+                    document.getElementById('contact-form').reset();
+                } catch (err) {
+                    console.error('Error guardando mensaje en Firestore:', err);
+                    feedbackBox.textContent = "No se pudo guardar el mensaje en el servidor. Por favor contáctanos por WhatsApp.";
+                    feedbackBox.className = "text-xs font-medium p-3 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20";
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i data-lucide="send" class="w-4 h-4"></i><span>Enviar Mensaje</span>';
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
